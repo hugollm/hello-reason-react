@@ -1,0 +1,14 @@
+{
+    "private": true,
+    "scripts": {
+        "start": "minib dev .dev",
+        "build": "minib build"
+    },
+    "devDependencies": {
+        "browserify": "^16.5.0",
+        "bs-platform": "^5.2.1",
+        "minib": "^0.1.0",
+        "reason-react": "^0.7.0",
+        "sass": "^1.23.7"
+    }
+}
