@@ -1,30 +1,41 @@
 module.exports = {
 
+    Setup: {
+        dev: 'mkdir -p lib/target/dev && rm -rf lib/target/dev/*',
+        build: 'mkdir -p lib/target/build && rm -rf lib/target/build/*',
+    },
+
     Index: {
-        dev: 'mkdir -p .dev && rm -rf .dev/* && cp src/index.html .dev/index.html',
-        build: 'mkdir -p dist && rm -rf dist/* && cp src/index.html dist/index.html',
+        after: 'Setup',
+        dev: 'cp src/index.html lib/target/dev/index.html',
+        build: 'cp src/index.html lib/target/build/index.html',
         watch: 'src/index.html',
     },
 
     Reason: {
-        after: 'Index',
+        after: 'Setup',
         dev: 'bsb -make-world',
         build: `bsb -clean && bsb -make-world`,
         watch: 'src/*.re',
     },
 
     Sass: {
-        after: 'Index',
-        dev: 'sass src/index.scss .dev/index.css --source-map',
-        build: `sass src/index.scss dist/index.css --no-source-map`,
+        after: 'Setup',
+        dev: 'sass src/index.scss lib/target/dev/index.css --source-map',
+        build: `sass src/index.scss lib/target/build/index.css --no-source-map`,
         watch: 'src/*.scss',
         reload: 'styles',
     },
 
-    Browserify: {
+    Webpack: {
         after: 'Reason',
-        dev: 'browserify lib/js/src/index.bs.js -o .dev/index.js',
-        build: `browserify lib/js/src/index.bs.js -o dist/index.js`,
+        dev: 'webpack lib/js/src/index.bs.js -o lib/target/dev/index.js --mode development',
+        build: `webpack lib/js/src/index.bs.js -o lib/target/build/index.js --mode production`,
         reload: 'page',
+    },
+
+    Uglify: {
+        after: 'Webpack',
+        build: `uglifyjs lib/target/build/index.js -o lib/target/build/index.js`,
     },
 };
